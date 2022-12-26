@@ -12,9 +12,11 @@ public class TestPen {
     public void checkConstructor1() throws NoSuchFieldException, IllegalAccessException {
         int testInkContainerValue = 6;
         Pen testPen1 = new Pen(testInkContainerValue);
+
         Field privateField = Pen.class.getDeclaredField("inkContainerValue");
         privateField.setAccessible(true);
-        int actualInkContainerValue = (int)privateField.get(testPen1);
+        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen1).toString());
+
         Assert.assertEquals(actualInkContainerValue, testInkContainerValue);
     }
 
@@ -26,11 +28,13 @@ public class TestPen {
 
         Field privateField = Pen.class.getDeclaredField("inkContainerValue");
         privateField.setAccessible(true);
-        int actualInkContainerValue = (int)privateField.get(testPen2);
+        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen2).toString());
+        //int actualInkContainerValue = (int)privateField.get(testPen2);
 
         Field privateField2 = Pen.class.getDeclaredField("sizeLetter");
         privateField2.setAccessible(true);
-        double actualSizeLetter = (double)privateField2.get(testPen2);
+        double actualSizeLetter = Double.parseDouble(privateField2.get(testPen2).toString());
+        //double actualSizeLetter = (double)privateField2.get(testPen2);
 
         softAssert.assertEquals(actualInkContainerValue, testInkContainerValue);
         softAssert.assertEquals(actualSizeLetter, testSizeLetter);
@@ -46,11 +50,13 @@ public class TestPen {
 
         Field privateField = Pen.class.getDeclaredField("inkContainerValue");
         privateField.setAccessible(true);
-        int actualInkContainerValue = (int) privateField.get(testPen3);
+        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen3).toString());
+        //int actualInkContainerValue = (int) privateField.get(testPen3);
 
         Field privateField2 = Pen.class.getDeclaredField("sizeLetter");
         privateField2.setAccessible(true);
-        double actualSizeLetter = (double) privateField2.get(testPen3);
+        double actualSizeLetter = Double.parseDouble(privateField2.get(testPen3).toString());
+        //double actualSizeLetter = (double) privateField2.get(testPen3);
 
         Field privateField3 = Pen.class.getDeclaredField("color");
         privateField3.setAccessible(true);
@@ -64,7 +70,7 @@ public class TestPen {
 
     @Test
     public void testMetodaIsWorkPositiveCase() {
-       Pen pen4 = new Pen(5);
+       Pen pen4 = new Pen(-3);
        Assert.assertTrue(pen4.isWork(), "Ruchka ne rabotaet potomy chto net chernil");
     }
 
@@ -86,6 +92,10 @@ public class TestPen {
                 {"BLUE"},
                 {"BLACK"}
         };
+
+
+
+
     }
 
 
