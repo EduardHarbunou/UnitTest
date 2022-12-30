@@ -11,57 +11,66 @@ import java.lang.reflect.Field;
 public class TestPen {
     SoftAssert softAssert = new SoftAssert();
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
-    @Test (description = "Proverka pervogo konstruktora")
-    public void checkConstructor1() throws NoSuchFieldException, IllegalAccessException {
-        int testInkContainerValue = 6;
-        Pen testPen1 = new Pen(testInkContainerValue);
-
+    @Test (dataProvider = "firstConstructor", description = "Checking the first constructor")
+    public void checkOneParametrConstructor(int testInkContainerValue) throws NoSuchFieldException, IllegalAccessException {
+        Pen testPen = new Pen(testInkContainerValue);
         Field privateField = Pen.class.getDeclaredField("inkContainerValue");
         privateField.setAccessible(true);
-        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen1).toString());
+        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen).toString());
 
         Assert.assertEquals(actualInkContainerValue, testInkContainerValue);
     }
 
-    @Test (description = "Proverka vtorogo konstructora")
-    public void checkConstructor2() throws NoSuchFieldException, IllegalAccessException {
-        int testInkContainerValue = 8;
-        double testSizeLetter = 0.338;
-        Pen testPen2 = new Pen(testInkContainerValue, testSizeLetter);
+    @DataProvider
+    public Object[][] firstConstructor() {
+        return new Object[][]{
+                {101},
+                {1},
+                {0}
+        };
+    }
+
+    @Test (dataProvider = "secondConstructor", description = "Checking the second constructor")
+    public void checkTwoParametrsConstructor(int testInkContainerValue, double testSizeLetter) throws NoSuchFieldException, IllegalAccessException {
+        Pen testPen = new Pen(testInkContainerValue, testSizeLetter);
 
         Field privateField = Pen.class.getDeclaredField("inkContainerValue");
         privateField.setAccessible(true);
-        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen2).toString());
-        //int actualInkContainerValue = (int)privateField.get(testPen2);
+        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen).toString());
 
         Field privateField2 = Pen.class.getDeclaredField("sizeLetter");
         privateField2.setAccessible(true);
-        double actualSizeLetter = Double.parseDouble(privateField2.get(testPen2).toString());
-        //double actualSizeLetter = (double)privateField2.get(testPen2);
+        double actualSizeLetter = Double.parseDouble(privateField2.get(testPen).toString());
 
         softAssert.assertEquals(actualInkContainerValue, testInkContainerValue);
         softAssert.assertEquals(actualSizeLetter, testSizeLetter);
         softAssert.assertAll();
     }
 
-    @Test (description = "Proverka tretego konstructora")
-    public void checkConstructor3() throws NoSuchFieldException, IllegalAccessException {
-        int testInkContainerValue = 10;
-        double testSizeLetter = 0.65;
-        String testColor = "Red";
-        Pen testPen3 = new Pen(testInkContainerValue, testSizeLetter, testColor);
+    @DataProvider
+    public Object[][] secondConstructor() {
+        return new Object[][]{
+                {101, 0.01},
+                {1, 0.99},
+                {0, 1.01}
+        };
+    }
+
+    @Test (dataProvider = "thirdConstructor", description = "Checking the third constructor")
+    public void checkThreeParametrsConstructor(int testInkContainerValue, double testSizeLetter, String testColor) throws NoSuchFieldException, IllegalAccessException {
+        Pen testPen = new Pen(testInkContainerValue, testSizeLetter, testColor);
 
         Field privateField = Pen.class.getDeclaredField("inkContainerValue");
         privateField.setAccessible(true);
-        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen3).toString());
+        int actualInkContainerValue = Integer.parseInt(privateField.get(testPen).toString());
 
         Field privateField2 = Pen.class.getDeclaredField("sizeLetter");
         privateField2.setAccessible(true);
-        double actualSizeLetter = Double.parseDouble(privateField2.get(testPen3).toString());
+        double actualSizeLetter = Double.parseDouble(privateField2.get(testPen).toString());
 
         Field privateField3 = Pen.class.getDeclaredField("color");
         privateField3.setAccessible(true);
-        String actualColor = (String) privateField3.get(testPen3);
+        String actualColor = (String) privateField3.get(testPen);
 
         softAssert.assertEquals(actualInkContainerValue, testInkContainerValue);
         softAssert.assertEquals(actualSizeLetter, testSizeLetter);
@@ -69,22 +78,32 @@ public class TestPen {
         softAssert.assertAll();
     }
 
-    @Test
-    public void testMetodaIsWorkPositiveCase() {
-       Pen pen4 = new Pen(-3);
-       Assert.assertTrue(pen4.isWork(), "Ruchka ne rabotaet potomy chto net chernil");
+    @DataProvider
+    public Object[][] thirdConstructor() {
+        return new Object[][]{
+                {101, 0.01, "Red"},
+                {1, 0.99, "Black"},
+                {0, 1.01, "Violet"}
+        };
     }
 
-    @Test
-    public void testMetodaIsWorkNegativeCase() {
-        Pen pen5 = new Pen(2);
-        Assert.assertFalse(pen5.isWork(), "Ruchka rabotaet potomy chto est' chernila");
+
+    @Test(description = "Positive test of isWork()")
+    public void testPositiveCaseIsWork() {
+       Pen testPen = new Pen(-3);
+       Assert.assertTrue(testPen.isWork(), "Ruchka ne rabotaet potomy chto net chernil");
     }
 
-    @Test(dataProvider = "colors")
-    public void testMetodaGetColorPositiveCase(String inputColor) {
-        Pen pen6 = new Pen(2, 0.5, inputColor);
-        Assert.assertEquals(pen6.getColor(), inputColor);
+    @Test(description = "Negative test of isWork()")
+    public void testNegativeCaseIsWork() {
+        Pen testPen = new Pen(2);
+        Assert.assertFalse(testPen.isWork(), "Ruchka rabotaet potomy chto est' chernila");
+    }
+
+    @Test(dataProvider = "colors", description = "Test of getColor()")
+    public void testMetodaGetColor(String testColor) {
+        Pen testPen = new Pen(2, 0.5, testColor);
+        Assert.assertEquals(testPen.getColor(), testColor);
     }
     @DataProvider
     public Object[][] colors() {
@@ -95,10 +114,10 @@ public class TestPen {
         };
     }
 
-    @Test (dataProvider = "positiveWord")
-    public void testMetodaWritePositiveCase(int obemSterzhne, double shrift, String inputWord) {
-            Pen pen7 = new Pen(obemSterzhne, shrift);
-            Assert.assertEquals(pen7.write(inputWord), inputWord);
+    @Test (dataProvider = "positiveWord", description = "Positive test of write()")
+    public void testMetodaWritePositiveCase(int testInkContainerValue, double testSizeLetter, String inputWord) {
+            Pen testPen = new Pen(testInkContainerValue, testSizeLetter);
+            Assert.assertEquals(testPen.write(inputWord), inputWord);
     }
     @DataProvider
     public Object[][] positiveWord() {
@@ -109,13 +128,13 @@ public class TestPen {
         };
     }
 
-    @Test (dataProvider = "negativeWordPystaiaStroka")
-    public void testMetodaWriteNegativeCase(int obemSterzhne, double shrift, String inputWord, String result) {
-        Pen pen7 = new Pen(obemSterzhne, shrift);
-        Assert.assertEquals(pen7.write(inputWord), result);
+    @Test (dataProvider = "negativeWord", description = "The first negative test of write()")
+    public void testMetodaWriteNegativeCase1(int testInkContainerValue, double testSizeLetter, String inputWord, String result) {
+        Pen testPen = new Pen(testInkContainerValue, testSizeLetter);
+        Assert.assertEquals(testPen.write(inputWord), result);
     }
     @DataProvider
-    public Object[][] negativeWordPystaiaStroka() {
+    public Object[][] negativeWord() {
         return new Object[][]{
                 {-5, 1.0, "Test", ""},
                 {-0, 2.0, "Predlozhenie", ""},
@@ -123,12 +142,12 @@ public class TestPen {
         };
     }
 
-    @Test (dataProvider = "Proverka partOfWord")
+    @Test (dataProvider = "partOfWord", description = "The second negative test of write()")
     public void testMetodaWriteNegativeCase2(int obemSterzhne, double shrift, String inputWord, String partOfWord) {
-        Pen pen8 = new Pen(obemSterzhne, shrift);
-        Assert.assertEquals(pen8.write(inputWord), partOfWord);
+        Pen testPen = new Pen(obemSterzhne, shrift);
+        Assert.assertEquals(testPen.write(inputWord), partOfWord);
     }
-    @DataProvider(name = "Proverka partOfWord")
+    @DataProvider
     public Object[][] partOfWord() {
         return new Object[][]{
                 {3, 1.0, "Test", "Tes"},
@@ -141,8 +160,8 @@ public class TestPen {
     public void testMetodaDoSomethingElse() {
         String testColor = "Red";
         System.setOut(new PrintStream(output));
-        Pen pen9 = new Pen(4,3.0, testColor);
-        pen9.doSomethingElse();
+        Pen testPen = new Pen(4,3.0, testColor);
+        testPen.doSomethingElse();
         Assert.assertEquals(testColor,output.toString().trim());
     }
 }
